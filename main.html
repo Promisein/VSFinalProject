@@ -1,0 +1,92 @@
+<!DOCTYPE HTML>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <title>Data visualization</title>
+        <link href="./css/bootstrap.css" rel='stylesheet' type='text/css' /> 
+        <!------ commn-js files ----->
+        <script src="./js/jquery.min.js"> </script>
+        <!------ commn-js files ----->
+        <!----- theme-style ----->
+        <link href="./css/style2.css" rel='stylesheet' type='text/css' />
+        <!----- theme-style ----->
+        
+        <!----- webfonts ----->
+        <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+        <!----- webfonts ----->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href="css/style_2.css" rel="stylesheet" type="text/css" media="all" />
+    <!--nav-->
+    <script src="js/jquery.min.js"></script>
+    <!-- Add fancyBox main JS and CSS files -->
+    <script src="js/jquery.magnific-popup.js" type="text/javascript"></script>
+    <link href="css/magnific-popup.css" rel="stylesheet" type="text/css">
+            <script>
+                $(document).ready(function() {
+                    $('.popup-with-zoom-anim').magnificPopup({
+                        type: 'inline',
+                        fixedContentPos: false,
+                        fixedBgPos: false,
+                        overflowY: 'auto',
+                        closeBtnInside: true,
+                        preloader: false,
+                        midClick: true,
+                        removalDelay: 300,
+                        mainClass: 'my-mfp-zoom-in'
+                });
+            });
+            </script>
+        <link href="lib/bootstrap-3.3.4/css/bootstrap.min.css" rel="stylesheet">
+        <link href="lib/bootstrap-slider/css/bootstrap-slider.css" rel="stylesheet">
+        <link href="css/style.css" rel="stylesheet">
+    </head>
+
+    <body>
+        <!-- <div class="header">
+            <!---container--->
+                <div class="container">
+                <div class="top-header">
+    <!-- 				<div class="logo">
+                        <a href="../index.html"><img src="./images/logo.png"/></a>
+                    </div> -->
+                    <div class="menu">
+                        <ul class="nav" id="nav">
+                            <!-- <li><a href="../index.html">主页</a></li> -->
+                            <li class="active"><a href="myModel.html" class="scroll">各省GDP</a></li>
+                            <!-- <li><a href="stock.html" class="scroll">各省市历年经济</a></li>
+                            <li><a href="model1.html" class="scroll">全国县区经济</a></li>
+                            <li ><a href="about.html" class="scroll">关于</a></li> -->
+                        </ul>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+                </div>
+            <!---container--->
+            </div> -->
+        <div class="container" id="map-container">
+            <div id="data-map"></div>
+            <div id="year-selector">
+                <input id="year-slider" data-slider-id='year-slider' type="text" data-slider-min="1979"
+                       data-slider-max="2013" data-slider-step="1" data-slider-value="1979" data-slider-handle="square"
+                       data-slider-orientation="vertical"/>
+            </div>
+        </div>    
+        <div id="province-chart"></div>
+
+        <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+        <script type="text/javascript" src="lib/bootstrap-3.3.4/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="lib/bootstrap-slider/js/bootstrap-slider.js"></script>
+        <script type="text/javascript" src="lib/highmaps-1.1.5/js/highcharts.js"></script>
+        <script type="text/javascript" src="lib/highmaps-1.1.5/js/modules/map.js"></script>
+        <script type="text/javascript" src="lib/highmaps-1.1.5/map/cn-all-sar-taiwan.js"></script>
+        <script type="text/javascript" src="data/data.js"></script>
+        <script type="text/javascript" src="js/map_show.js"></script>
+        <script type="text/javascript" src="js/event.js"></script>
+    </body>
+</html>
