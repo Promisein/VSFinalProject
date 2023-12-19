@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html style="height: 100%">
+   <head>
+       <meta charset="utf-8">
+       <title>1997-2013 全国省市县经济数据</title>
+       <link href="./css/bootstrap.css" rel='stylesheet' type='text/css' /> 
+       <!------ commn-js files ----->
+       <script src="./js/jquery.min.js"> </script>
+       <!------ commn-js files ----->
+       <!----- theme-style ----->
+       <link href="./css/style.css" rel='stylesheet' type='text/css' />
+       <!----- theme-style ----->
+       
+       <!----- webfonts ----->
+       <link href='http://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700,800' rel='stylesheet' type='text/css'>
+       <!----- webfonts ----->
+       <meta name="viewport" content="width=device-width, initial-scale=1">
+       <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+   <link href="css/style_2.css" rel="stylesheet" type="text/css" media="all" />
+   <!--nav-->
+   <script src="js/jquery.min.js"></script>
+   <!-- Add fancyBox main JS and CSS files -->
+   <script src="js/jquery.magnific-popup.js" type="text/javascript"></script>
+   <link href="css/magnific-popup.css" rel="stylesheet" type="text/css">
+           <script>
+               $(document).ready(function() {
+                   $('.popup-with-zoom-anim').magnificPopup({
+                       type: 'inline',
+                       fixedContentPos: false,
+                       fixedBgPos: false,
+                       overflowY: 'auto',
+                       closeBtnInside: true,
+                       preloader: false,
+                       midClick: true,
+                       removalDelay: 300,
+                       mainClass: 'my-mfp-zoom-in'
+               });
+           });
+           </script>
+   </head>
+   <body style="height: 100%; margin: 0">
+       <div id="container1" style="height: 90%;background-color:white; " ></div>
+       <div id="container2" style="height: 90%;margin-left:0px;padding-left:0px;background-color:white; "></div>
+              	<!---header--->
+		<div class="header">
+            <!---container--->
+                <div class="container">
+                <div class="top-header">
+    <!-- 				<div class="logo">
+                        <a href="../about.html"><img src="./images/logo.png"/></a>
+                    </div> -->
+                    <div class="menu">
+                        <ul class="nav" id="nav">
+                            <li><a href="1.html" class="scroll">各省人均GDP</a></li>
+                            <li class="active"><a href="2.html" class="scroll">各省市历年经济</a></li>
+                            <li><a href="about.html" class="scroll">关于</a></li>
+                        </ul>
+                    </div>
+                    <div class="clearfix"> </div>
+                </div>
+                </div>
+            <!---container--->
+            </div>
+       <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.13.1/xlsx.full.min.js"></script>
+       <script type="text/javascript" src="js/echarts.min.js"></script>
+       <script type="text/javascript" src="js/echarts-gl.min.js"></script>
+       <script type="text/javascript" src="js/ecStat.min.js"></script>
+       <script type="text/javascript" src="js/dataTool.min.js"></script>
+       <script type="text/javascript" src="js/china.js"></script>
+       <script type="text/javascript" src="js/world.js"></script>
+       <script src="js/d3.v6.min.js"></script>
+       <script src="js/jquery.min.js"></script>
+       <!-- <script type="text/javascript" src="https://api.map.baidu.com/api?v=2.0&ak=xfhhaTThl11qYVrqLZii6w8qE5ggnhrY&__ec_v__=20190126"></script> -->
+       <!-- <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/echarts/dist/extension/bmap.min.js"></script> -->
+       <script type="text/javascript">
+document.getElementById("container1").style.width="50%";
+document.getElementById("container2").style.width="50%";
+document.getElementById("container1").style.float='left';
+document.getElementById("container2").style.float='right';
+var dom = document.getElementById("container1");
+var dom_city = document.getElementById("container2");
+var myChart = echarts.init(dom);
+var myChart_city = echarts.init(dom_city);
+var dataMap = {};
+var plist=[];
+async function loadFile(file) {
+    let data =await d3.csv(file).then(d => {
+        let mapped = d.map(g => {
+            for (let key in g) {
+                let numKey = +key;
+                if (numKey) {
+                    g[key] = +g[key];
+                }
+            }
+            return g;
+        });
+        return mapped;
+    });
+    return data;
+
+}
+
+this.loadFile('data/NSE_county_data.csv').then(res =>{
+    	//.then是接收正确返回的信息
+    console.log(res);
+
+    for (var i in res) {
+    if (res[i].city_name=='汇总'){
+
+        plist.push(res[i].province);
+        }
+                // listt.append(wb[i].LATB);
+                
+        }
+
+function dataFormatter(obj) {
+
+    var name=plist;
+    console.log(plist);
+    // console.log(plist);
+    // var pList = ['证券', '区域地产', '生物制药', '火力发电', '水运', '石油开采', '多元金融', '文教休闲', '元器件', '电信运营', '铁路', '影视音像', '港口', '石油加工', '白酒', 'IT设备', '互联网', '公共交通', '通信设备', '汽车整车', '百货', '全国地产', '汽车服务', '化工原料', '保险', '煤炭开采', '软件服务', '中成药', '路桥', '普钢', '化学制药', '电器仪表', '电气设备', '综合类', '环境保护', '建筑工程', '汽车配件', '家用电器', '水力发电', '园区开发', '银行'];
+    var temp;
+    for (var year = 1997; year <= 2013; year++) {
+        var max = 0;
+        var sum = 0;
+        temp = obj[year];
+        for (var i = 0, l = temp.length; i < l; i++) {
+            max = Math.max(max, temp[i]);
+            sum += temp[i];
+            obj[year][i] = {
+                name : name[i],
+                value : temp[i]
+            }
+        }
+        obj[year + 'max'] = Math.floor(max / 100) * 100;
+        obj[year + 'sum'] = sum;
+    }
+    return obj;
+
+}
+
+
+function dataFormatter_city(obj) {
+
+var name=abc_city;
+// console.log(plist);
+// var pList = ['证券', '区域地产', '生物制药', '火力发电', '水运', '石油开采', '多元金融', '文教休闲', '元器件', '电信运营', '铁路', '影视音像', '港口', '石油加工', '白酒', 'IT设备', '互联网', '公共交通', '通信设备', '汽车整车', '百货', '全国地产', '汽车服务', '化工原料', '保险', '煤炭开采', '软件服务', '中成药', '路桥', '普钢', '化学制药', '电器仪表', '电气设备', '综合类', '环境保护', '建筑工程', '汽车配件', '家用电器', '水力发电', '园区开发', '银行'];
+var temp;
+for (var year = 1997; year <= 2013; year++) {
+    var max = 0;
+    var sum = 0;
+    temp = obj[year];
+    for (var i = 0, l = temp.length; i < l; i++) {
+        max = Math.max(max, temp[i]);
+        sum += temp[i];
+        obj[year][i] = {
+            name : name[i],
+            value : temp[i]
+        }
+    }
+    obj[year + 'max'] = Math.floor(max / 100) * 100;
+    obj[year + 'sum'] = sum;
+}
+return obj;
+
+}
+
+var pro_1997=[];
+    for (var i in res) {
+                // listt.append(wb[i].LATB);
+                if (res[i].city_name=='汇总'){
+                pro_1997.push(parseFloat(res[i].一九九七));
+                }
+            }
+            var pro_1998=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_1998.push(parseFloat(res[i].一九九八));
+            }}
+            var pro_1999=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_1999.push(parseFloat(res[i].一九九九));
+            }}
+            var pro_2000=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2000.push(parseFloat(res[i].二零零零));
+            }}
+            var pro_2001=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2001.push(parseFloat(res[i].二零零一));
+            }}
+            var pro_2002=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2002.push(parseFloat(res[i].二零零二));
+            }}
+            var pro_2003=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2003.push(parseFloat(res[i].二零零三));
+            }}
+            var pro_2004=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2004.push(parseFloat(res[i].二零零四));
+            }}
+            var pro_2005=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2005.push(parseFloat(res[i].二零零五));
+            }}
+            var pro_2006=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2006.push(parseFloat(res[i].二零零六));
+            }}
+            var pro_2007=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2007.push(parseFloat(res[i].二零零七));
+            }}
+            var pro_2008=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2008.push(parseFloat(res[i].二零零八));
+            }}
+            var pro_2009=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2009.push(parseFloat(res[i].二零零九));
+            }}
+            var pro_2010=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2010.push(parseFloat(res[i].二零一零));
+            }}
+            var pro_2011=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2011.push(parseFloat(res[i].二零一一));
+            }}
+            var pro_2012=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2012.push(parseFloat(res[i].二零一二));
+            }}
+            var pro_2013=[];
+    for (var i in res) {
+        if (res[i].city_name=='汇总'){
+                // listt.append(wb[i].LATB);
+                pro_2013.push(parseFloat(res[i].二零一三));
+            }}
+dataMap.dataGDP = dataFormatter({
+    //max : 60000,
+    1997: pro_1997,
+    1998: pro_1998,
+    1999: pro_1999,
+    2000: pro_2000,
+    2001: pro_2001,
+    2002: pro_2002,
+    2003: pro_2003,
+    2004: pro_2004,
+    2005: pro_2005,
+    2006: pro_2006,
+    2007: pro_2007,
+    2008: pro_2008,
+    2009: pro_2009,
+    2010: pro_2010,
+    2011: pro_2011,
+    2012: pro_2012,
+    2013: pro_2013
+});
+option = {
+    baseOption: {
+        timeline: {
+            // y: 0,
+            axisType: 'category',
+            // realtime: false,
+            // loop: false,
+            autoPlay: false,
+            // currentIndex: 2,
+            playInterval: 1000,
+            // controlStyle: {
+            //     position: 'left'
+            // },
+            data: [
+
+                '1997-12-31',
+                {
+                    value: '1998-12-31',
+                    tooltip: {
+                        formatter: '{b} 亚洲金融危机影响中国'
+                    },
+                    symbol: 'diamond',
+                    symbolSize: 16
+                },
+                '1999-12-31', '2000-12-31', '2001-12-31', '2002-12-31', '2003-12-31', '2004-12-31', '2005-12-31', '2006-12-31', '2007-12-31', 
+                {
+                    value: '2008-12-31',
+                    tooltip: {
+                        formatter: '{b} 2008年金融危机席卷全球'
+                    },
+                    symbol: 'diamond',
+                    symbolSize: 25
+                },
+                '2009-12-31',
+                {
+                    value: '2010-12-31',
+                    tooltip: {
+                        formatter: '{b} 中国经济飞速发展'
+                    },
+                    symbol: 'diamond',
+                    symbolSize: 25
+                },
+                '2011-12-31',
+                '2012-12-31',
+                {
+                    value: '2013-12-31',
+                    tooltip: {
+                        formatter: '{b} 各行各业产值迅速增长'
+                    },
+                    symbol: 'diamond',
+                    symbolSize: 16
+                },
+                // '2002-01-01','2003-01-01','2004-01-01',
+                // '2006-01-01', '2007-01-01','2008-01-01','2009-01-01','2010-01-01',
+                // {
+                //     value: '2011-01-01',
+                //     tooltip: {
+                //         formatter: function (params) {
+                //             return params.name + 'GDP达到又一个高度';
+                //         }
+                //     },
+                //     symbol: 'diamond',
+                //     symbolSize: 18
+                // },
+            ],
+            label: {
+                formatter : function(s) {
+                    return (new Date(s)).getFullYear();
+                }
+            }
+        },
+        tooltip: {},
+        // legend: {
+        //     x: 'right',
+        //     data: ['第一产业', '第二产业', '第三产业', 'GDP', '金融', '房地产'],
+        //     selected: {
+        //         'GDP': false, '金融': false, '房地产': false
+        //     }
+        // },
+        calculable : true,
+        grid: {
+            top: 80,
+            bottom: 100
+        },
+        xAxis: [
+            {
+                'type':'category',
+                'axisLabel':{'interval':0},
+                'data':['安徽', '\n\n北京', '福建', '\n\n甘肃', '广东', '\n\n广西', '贵州', '\n\n海南', '河北', '\n\n河南', '黑龙江', '\n\n湖北', '湖南', '\n\n吉林', '江苏', '\n\n江西', '辽宁', '\n\n内蒙', '宁夏', '\n\n青海', '山东', '\n\n山西', '陕西', '\n\n上海', '四川', '\n\n天津', '西藏', '\n\n新疆', '云南', '\n\n浙江', '重庆'],
+                splitLine: {show: false}
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: 'GDP（亿元）',
+                // max: 53500
+                max: 38000
+            }
+        ],
+        series: [
+            {name: 'value', type: 'bar'},
+        ]
+    },
+    options: [
+        {
+            title: {text: '1997年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['1997']},
+            ]
+        },
+        {
+            title: {text: '1998年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['1998']},
+            ]
+        },
+        {
+            title: {text: '1999年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['1999']},
+            ]
+        },
+        {
+            title: {text: '2000年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2000']},
+            ]
+        },
+        {
+            title: {text: '2001年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2001']},
+            ]
+        },
+        {
+            title: {text: '2002年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2002']},
+            ]
+        },
+        {
+            title: {text: '2003年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2003']},
+            ]
+        },
+        {
+            title: {text: '2004年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2004']},
+            ]
+        },
+        {
+            title: {text: '2005年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2005']},
+            ]
+        },
+        {
+            title: {text: '2006年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2006']},
+            ]
+        },
+        {
+            title: {text: '2007年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2007']},
+            ]
+        },
+        {
+            title: {text: '2008年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2008']},
+            ]
+        },
+        {
+            title: {text: '2009年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2009']},
+            ]
+        },
+        {
+            title: {text: '2010年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2010']},
+            ]
+        },
+        {
+            title: {text: '2011年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2011']},
+            ]
+        },
+        {
+            title: {text: '2012年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2012']},
+            ]
+        },
+        {
+            title: {text: '2013年各省GDP'},
+            series: [
+                {data: dataMap.dataGDP['2013']},
+            ]
+        },
+
+    ]
+};
+;
+
+
+
+
+var abc_city=[];
+for (var i in res) {
+    if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+
+                    abc_city.push(res[i].city_name);
+                }
+                // listt.append(wb[i].LATB);
+                
+            }
+var city_1997=[];
+    for (var i in res) {
+                // listt.append(wb[i].LATB);
+                if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                    city_1997.push(parseFloat(res[i].一九九七));
+                }
+            }
+            var city_1998=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_1998.push(parseFloat(res[i].一九九八));
+            }}
+            var city_1999=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_1999.push(parseFloat(res[i].一九九九));
+            }}
+            var city_2000=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2000.push(parseFloat(res[i].二零零零));
+            }}
+            var city_2001=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2001.push(parseFloat(res[i].二零零一));
+            }}
+            var city_2002=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2002.push(parseFloat(res[i].二零零二));
+            }}
+            var city_2003=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2003.push(parseFloat(res[i].二零零三));
+            }}
+            var city_2004=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2004.push(parseFloat(res[i].二零零四));
+            }}
+            var city_2005=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2005.push(parseFloat(res[i].二零零五));
+            }}
+            var city_2006=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2006.push(parseFloat(res[i].二零零六));
+            }}
+            var city_2007=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2007.push(parseFloat(res[i].二零零七));
+            }}
+            var city_2008=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2008.push(parseFloat(res[i].二零零八));
+            }}
+            var city_2009=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2009.push(parseFloat(res[i].二零零九));
+            }}
+            var city_2010=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2010.push(parseFloat(res[i].二零一零));
+            }}
+            var city_2011=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2011.push(parseFloat(res[i].二零一一));
+            }}
+            var city_2012=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2012.push(parseFloat(res[i].二零一二));
+            }}
+            var city_2013=[];
+    for (var i in res) {
+        if (res[i].province=='安徽' && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2013.push(parseFloat(res[i].二零一三));
+            }}
+dataMap.dataGDP_city = dataFormatter_city({
+    //max : 60000,
+    1997: city_1997,
+    1998: city_1998,
+    1999: city_1999,
+    2000: city_2000,
+    2001: city_2001,
+    2002: city_2002,
+    2003: city_2003,
+    2004: city_2004,
+    2005: city_2005,
+    2006: city_2006,
+    2007: city_2007,
+    2008: city_2008,
+    2009: city_2009,
+    2010: city_2010,
+    2011: city_2011,
+    2012: city_2012,
+    2013: city_2013
+});
+console.log(dataMap.dataGDP_city);
+
+option_pro = {
+    baseOption: {
+        timeline: {
+            // y: 0,
+            axisType: 'category',
+            // realtime: false,
+            // loop: false,
+            autoPlay: false,
+            // currentIndex: 2,
+            playInterval: 1000,
+            // controlStyle: {
+            //     position: 'left'
+            // },
+            data: [
+        
+                '1997-12-31','1998-12-31', '1999-12-31', '2000-12-31', '2001-12-31', '2002-12-31', '2003-12-31', '2004-12-31', '2005-12-31', '2006-12-31', '2007-12-31', '2008-12-31','2009-12-31','2010-12-31','2011-12-31','2012-12-31','2013-12-31',
+
+                // '2002-01-01','2003-01-01','2004-01-01',
+                // '2006-01-01', '2007-01-01','2008-01-01','2009-01-01','2010-01-01',
+                // {
+                //     value: '2011-01-01',
+                //     tooltip: {
+                //         formatter: function (params) {
+                //             return params.name + 'GDP达到又一个高度';
+                //         }
+                //     },
+                //     symbol: 'diamond',
+                //     symbolSize: 18
+                // },
+            ],
+            label: {
+                formatter : function(s) {
+                    return (new Date(s)).getFullYear();
+                }
+            }
+        },
+        tooltip: {},
+        // legend: {
+        //     x: 'right',
+        //     data: ['第一产业', '第二产业', '第三产业', 'GDP', '金融', '房地产'],
+        //     selected: {
+        //         'GDP': false, '金融': false, '房地产': false
+        //     }
+        // },
+        calculable : true,
+        grid: {
+            top: 80,
+            bottom: 100
+        },
+        xAxis: [
+            {
+                'type':'category',
+                'axisLabel':{'interval':0},
+                'data':abc_city,
+                splitLine: {show: false}
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: 'GDP（亿元）',
+                // max: 53500
+                max: 2000
+            }
+        ],
+        series: [
+            {name: 'value', type: 'bar'},
+        ]
+    },
+    options: [
+        {
+            title: {text: '1997年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['1997']},
+            ]
+        },
+        {
+            title: {text: '1998年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['1998']},
+            ]
+        },
+        {
+            title: {text: '1999年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['1999']},
+            ]
+        },
+        {
+            title: {text: '2000年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2000']},
+            ]
+        },
+        {
+            title: {text: '2001年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2001']},
+            ]
+        },
+        {
+            title: {text: '2002年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2002']},
+            ]
+        },
+        {
+            title: {text: '2003年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2003']},
+            ]
+        },
+        {
+            title: {text: '2004年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2004']},
+            ]
+        },
+        {
+            title: {text: '2005年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2005']},
+            ]
+        },
+        {
+            title: {text: '2006年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2006']},
+            ]
+        },
+        {
+            title: {text: '2007年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2007']},
+            ]
+        },
+        {
+            title: {text: '2008年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2008']},
+            ]
+        },
+        {
+            title: {text: '2009年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2009']},
+            ]
+        },
+        {
+            title: {text: '2010年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2010']},
+            ]
+        },
+        {
+            title: {text: '2011年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2011']},
+            ]
+        },
+        {
+            title: {text: '2012年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2012']},
+            ]
+        },
+        {
+            title: {text: '2013年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2013']},
+            ]
+        },
+    ]
+};
+;
+
+
+myChart.on("click",function(params){
+    var name=params.name;
+    console.log(name);
+    var abc_cityclick=[];
+for (var i in res) {
+    if (res[i].province==name && res[i].city_name!='汇总'){
+
+        abc_cityclick.push(res[i].city_name);
+                }
+                // listt.append(wb[i].LATB);
+                
+            }
+console.log(abc_cityclick);
+            var city_1997=[];
+    for (var i in res) {
+                // listt.append(wb[i].LATB);
+                if (res[i].province==name && res[i].city_name!='汇总'){
+                    city_1997.push(parseFloat(res[i].一九九七));
+                }
+            }
+            var city_1998=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_1998.push(parseFloat(res[i].一九九八));
+            }}
+            var city_1999=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_1999.push(parseFloat(res[i].一九九九));
+            }}
+            var city_2000=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2000.push(parseFloat(res[i].二零零零));
+            }}
+            var city_2001=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2001.push(parseFloat(res[i].二零零一));
+            }}
+            var city_2002=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2002.push(parseFloat(res[i].二零零二));
+            }}
+            var city_2003=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2003.push(parseFloat(res[i].二零零三));
+            }}
+            var city_2004=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2004.push(parseFloat(res[i].二零零四));
+            }}
+            var city_2005=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2005.push(parseFloat(res[i].二零零五));
+            }}
+            var city_2006=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2006.push(parseFloat(res[i].二零零六));
+            }}
+            var city_2007=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2007.push(parseFloat(res[i].二零零七));
+            }}
+            var city_2008=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2008.push(parseFloat(res[i].二零零八));
+            }}
+            var city_2009=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2009.push(parseFloat(res[i].二零零九));
+            }}
+            var city_2010=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2010.push(parseFloat(res[i].二零一零));
+            }}
+            var city_2011=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2011.push(parseFloat(res[i].二零一一));
+            }}
+            var city_2012=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2012.push(parseFloat(res[i].二零一二));
+            }}
+            var city_2013=[];
+    for (var i in res) {
+        if (res[i].province==name && res[i].city_name!='汇总'){
+                // listt.append(wb[i].LATB);
+                city_2013.push(parseFloat(res[i].二零一三));
+            }}
+
+function dataFormatter_cityclick(obj) {
+
+var name=abc_cityclick;
+// console.log(plist);
+// var pList = ['证券', '区域地产', '生物制药', '火力发电', '水运', '石油开采', '多元金融', '文教休闲', '元器件', '电信运营', '铁路', '影视音像', '港口', '石油加工', '白酒', 'IT设备', '互联网', '公共交通', '通信设备', '汽车整车', '百货', '全国地产', '汽车服务', '化工原料', '保险', '煤炭开采', '软件服务', '中成药', '路桥', '普钢', '化学制药', '电器仪表', '电气设备', '综合类', '环境保护', '建筑工程', '汽车配件', '家用电器', '水力发电', '园区开发', '银行'];
+var temp;
+for (var year = 1997; year <= 2013; year++) {
+    var max = 0;
+    var sum = 0;
+    temp = obj[year];
+    for (var i = 0, l = temp.length; i < l; i++) {
+        max = Math.max(max, temp[i]);
+        sum += temp[i];
+        obj[year][i] = {
+            name : name[i],
+            value : temp[i]
+        }
+    }
+    obj[year + 'max'] = Math.floor(max / 100) * 100;
+    obj[year + 'sum'] = sum;
+}
+return obj;
+
+}
+dataMap.dataGDP_city = dataFormatter_cityclick({
+    //max : 60000,
+    1997: city_1997,
+    1998: city_1998,
+    1999: city_1999,
+    2000: city_2000,
+    2001: city_2001,
+    2002: city_2002,
+    2003: city_2003,
+    2004: city_2004,
+    2005: city_2005,
+    2006: city_2006,
+    2007: city_2007,
+    2008: city_2008,
+    2009: city_2009,
+    2010: city_2010,
+    2011: city_2011,
+    2012: city_2012,
+    2013: city_2013
+});
+console.log(dataMap.dataGDP_city);
+
+option_pro = {
+    baseOption: {
+        timeline: {
+            // y: 0,
+            axisType: 'category',
+            // realtime: false,
+            // loop: false,
+            autoPlay: false,
+            // currentIndex: 2,
+            playInterval: 1000,
+            // controlStyle: {
+            //     position: 'left'
+            // },
+            data: [
+        
+                '1997-12-31','1998-12-31', '1999-12-31', '2000-12-31', '2001-12-31', '2002-12-31', '2003-12-31', '2004-12-31', '2005-12-31', '2006-12-31', '2007-12-31', '2008-12-31','2009-12-31','2010-12-31','2011-12-31','2012-12-31','2013-12-31',
+
+                // '2002-01-01','2003-01-01','2004-01-01',
+                // '2006-01-01', '2007-01-01','2008-01-01','2009-01-01','2010-01-01',
+                // {
+                //     value: '2011-01-01',
+                //     tooltip: {
+                //         formatter: function (params) {
+                //             return params.name + 'GDP达到又一个高度';
+                //         }
+                //     },
+                //     symbol: 'diamond',
+                //     symbolSize: 18
+                // },
+            ],
+            label: {
+                formatter : function(s) {
+                    return (new Date(s)).getFullYear();
+                }
+            }
+        },
+        tooltip: {},
+        // legend: {
+        //     x: 'right',
+        //     data: ['第一产业', '第二产业', '第三产业', 'GDP', '金融', '房地产'],
+        //     selected: {
+        //         'GDP': false, '金融': false, '房地产': false
+        //     }
+        // },
+        calculable : true,
+        grid: {
+            top: 80,
+            bottom: 100
+        },
+        xAxis: [
+            {
+                'type':'category',
+                'axisLabel':{'interval':0},
+                'data':abc_cityclick,
+                splitLine: {show: false}
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: 'GDP（亿元）',
+                // max: 53500
+                max: 5000
+            }
+        ],
+        series: [
+            {name: 'value', type: 'bar'},
+        ]
+    },
+    options: [
+        {
+            title: {text: '1997年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['1997']},
+            ]
+        },
+        {
+            title: {text: '1998年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['1998']},
+            ]
+        },
+        {
+            title: {text: '1999年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['1999']},
+            ]
+        },
+        {
+            title: {text: '2000年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2000']},
+            ]
+        },
+        {
+            title: {text: '2001年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2001']},
+            ]
+        },
+        {
+            title: {text: '2002年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2002']},
+            ]
+        },
+        {
+            title: {text: '2003年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2003']},
+            ]
+        },
+        {
+            title: {text: '2004年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2004']},
+            ]
+        },
+        {
+            title: {text: '2005年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2005']},
+            ]
+        },
+        {
+            title: {text: '2006年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2006']},
+            ]
+        },
+        {
+            title: {text: '2007年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2007']},
+            ]
+        },
+        {
+            title: {text: '2008年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2008']},
+            ]
+        },
+        {
+            title: {text: '2009年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2009']},
+            ]
+        },
+        {
+            title: {text: '2010年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2010']},
+            ]
+        },
+        {
+            title: {text: '2011年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2011']},
+            ]
+        },
+        {
+            title: {text: '2012年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2012']},
+            ]
+        },
+        {
+            title: {text: '2013年省内各市GDP'},
+            series: [
+                {data: dataMap.dataGDP_city['2013']},
+            ]
+        },
+    ]
+};
+;
+
+if (option_pro && typeof option_pro === "object") {
+    myChart_city.setOption(option_pro, true);
+}
+
+});
+
+if (option && typeof option === "object") {
+    myChart.setOption(option, true);
+}
+
+
+
+if (option_pro && typeof option_pro === "object") {
+    myChart_city.setOption(option_pro, true);
+}
+})
+       </script>
+   </body>
+
+
+</html>

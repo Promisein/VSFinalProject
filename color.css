@@ -1,0 +1,183 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand&display=swap');
+
+:root {
+  font-size: 15px;
+}
+body {
+  font-family: 'Quicksand', sans-serif;
+  margin: 0;
+  min-height: 100vh;
+  background-color: #e493d0;
+  background-image: 
+    radial-gradient(closest-side, #a18cd1, #a18cd100),
+    radial-gradient(closest-side, #ff867a, #ff857a00 ),
+    radial-gradient(closest-side, #f6d365, #f6d46500),
+    radial-gradient(closest-side, #fa709a, #fa709900),
+    radial-gradient(closest-side, #d1fdff, #d1fdff00);
+  background-size: 
+    130vmax 130vmax,
+    80vmax 80vmax,
+    90vmax 90vmax,
+    110vmax 110vmax,
+    90vmax 90vmax;
+  background-position:
+    -80vmax -80vmax,
+    60vmax -30vmax,
+    10vmax 10vmax,
+    -30vmax -10vmax,
+    50vmax 50vmax;
+  background-repeat: no-repeat;
+  animation: 10s movement linear infinite;
+}
+
+body::after {
+  content: '';
+  display: block;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+.top-navigation {
+  position: fixed; /* 或者使用absolute，根据需要 */
+  top: 0%;
+  left: 0;
+  width: 100%; /* 设置宽度为100%以覆盖全宽 */
+  z-index: 100; /* 确保导航栏在其他内容之上 */
+  background: #000000; /* 或任何您想要的颜色 */
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); /* 可选的阴影效果 */
+  }
+span {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  min-height: 30vh;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 5rem;
+  color: #ee609c;
+  text-shadow:
+    0px 0px 1px rgba(255, 255, 255, .6),
+    0px 4px 4px rgba(0, 0, 0, .05);
+  letter-spacing: .2rem;
+}
+backtext {
+  left: 10%;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  min-height:15vh;
+  width: 80%;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: #0d0235;
+  text-shadow:
+    0px 0px 1px rgba(255, 255, 255, .6),
+    0px 4px 4px rgba(0, 0, 0, .05);
+  letter-spacing: .2rem;
+}
+group {
+  left: 70%;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  min-height:0vh;
+  width: 20%;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  color: #ee609c;
+  text-shadow:
+    0px 0px 1px rgba(255, 255, 255, .6),
+    0px 4px 4px rgba(0, 0, 0, .05);
+  letter-spacing: .2rem;
+}
+group1 {
+  left: 70%;
+  position: relative;
+  z-index: 10;
+  display: flex;
+  min-height:0vh;
+  width: 20%;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: #2e1e8d;
+  text-shadow:
+    0px 0px 1px rgba(255, 255, 255, .6),
+    0px 4px 4px rgba(0, 0, 0, .05);
+  letter-spacing: .2rem;
+}
+@keyframes movement {
+  0%, 100% {
+    background-size: 
+      130vmax 130vmax,
+      80vmax 80vmax,
+      90vmax 90vmax,
+      110vmax 110vmax,
+      90vmax 90vmax;
+    background-position:
+      -80vmax -80vmax,
+      60vmax -30vmax,
+      10vmax 10vmax,
+      -30vmax -10vmax,
+      50vmax 50vmax;
+  }
+  25% {
+    background-size: 
+      100vmax 100vmax,
+      90vmax 90vmax,
+      100vmax 100vmax,
+      90vmax 90vmax,
+      60vmax 60vmax;
+    background-position:
+      -60vmax -90vmax,
+      50vmax -40vmax,
+      0vmax -20vmax,
+      -40vmax -20vmax,
+      40vmax 60vmax;
+  }
+  50% {
+    background-size: 
+      80vmax 80vmax,
+      110vmax 110vmax,
+      80vmax 80vmax,
+      60vmax 60vmax,
+      80vmax 80vmax;
+    background-position:
+      -50vmax -70vmax,
+      40vmax -30vmax,
+      10vmax 0vmax,
+      20vmax 10vmax,
+      30vmax 70vmax;
+  }
+  75% {
+    background-size: 
+      90vmax 90vmax,
+      90vmax 90vmax,
+      100vmax 100vmax,
+      90vmax 90vmax,
+      70vmax 70vmax;
+    background-position:
+      -50vmax -40vmax,
+      50vmax -30vmax,
+      20vmax 0vmax,
+      -10vmax 10vmax,
+      40vmax 60vmax;
+  }
+}
+.background-blur {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1; /* 确保背景在其他内容下方 */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
